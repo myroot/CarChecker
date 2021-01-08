@@ -29,35 +29,37 @@ namespace CarChecker
                     services.AddHttpClient("CarChecker.ServerAPI",
                         client => client.BaseAddress = new Uri(BaseAddress))
                         .AddHttpMessageHandler(() => new ApiAuthorizationMessageHandler(BaseAddress));
-
+                    
                     // Add protected storage for storage of refresh tokens
-                    services.AddProtectedStorage();
+                    //services.AddProtectedStorage();
 
                     // Other DI services
                     services.AddScoped<ILocalVehiclesStore, AppVehiclesStore>();
 
                     // Add the http client as the default to inject.
+                    
                     services.AddScoped<HttpClient>(sp =>
                     {
-                        var accessTokenProvider = sp.GetRequiredService<IAccessTokenProvider>();
-                        var httpClientFactory = sp.GetRequiredService<IHttpClientFactory>();
-                        ApiAuthorizationMessageHandler.RegisterTokenProvider(BaseAddress, accessTokenProvider);
-                        return httpClientFactory.CreateClient("CarChecker.ServerAPI");
+                        //var accessTokenProvider = sp.GetRequiredService<IAccessTokenProvider>();
+                        //var httpClientFactory = sp.GetRequiredService<IHttpClientFactory>();
+                        //ApiAuthorizationMessageHandler.RegisterTokenProvider(BaseAddress, accessTokenProvider);
+                        //return httpClientFactory.CreateClient("CarChecker.ServerAPI");
+                        return new HttpClient();
                     });
-
+                    
 
                     var configurationEndpoint = (Device.RuntimePlatform == Device.WPF) ?
                         $"{BaseAddress}_configuration/CarChecker.Windows" :
                         $"{BaseAddress}_configuration/CarChecker";
+                    services.AddApiAuthorization();
+                    //services.AddApiAuthorization((RemoteAuthenticationOptions<ApiAuthorizationProviderOptions> configure) =>
+                    //{
+                    //    //configure.ProviderOptions.ConfigurationEndpoint = configurationEndpoint;
+                    //    //configure.AuthenticationPaths.RemoteProfilePath = $"{BaseAddress}Identity/Account/Manage";
+                    //    //configure.AuthenticationPaths.RemoteRegisterPath = $"{BaseAddress}Identity/Account/Register";
+                    //});
 
-                    services.AddApiAuthorization((RemoteAuthenticationOptions<ApiAuthorizationProviderOptions> configure) =>
-                    {
-                        configure.ProviderOptions.ConfigurationEndpoint = configurationEndpoint;
-                        configure.AuthenticationPaths.RemoteProfilePath = $"{BaseAddress}Identity/Account/Manage";
-                        configure.AuthenticationPaths.RemoteRegisterPath = $"{BaseAddress}Identity/Account/Register";
-                    });
-
-                    services.AddScoped(typeof(AccountClaimsPrincipalFactory<RemoteUserAccount>), typeof(AppOfflineAccountClaimsPrincipalFactory));
+                    //services.AddScoped(typeof(AccountClaimsPrincipalFactory<RemoteUserAccount>), typeof(AppOfflineAccountClaimsPrincipalFactory));
                     services.AddLocalization(options => options.ResourcesPath = "Resources");
 
                     services.AddScoped<IAccountManager, AppAccountManager>();

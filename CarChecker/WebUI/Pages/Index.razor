@@ -1,21 +1,17 @@
 ﻿@page "/"
-@attribute [Authorize]
 @inject NavigationManager Navigation
 @inject ILocalVehiclesStore LocalVehiclesStore
 @inject IStringLocalizer<HybridApp> Localize
 
-<AuthorizeView>
-    <header>
-        <div class="toolbar">
-            <button class="toolbar-item" @onclick="() => loginStatusOverlay.Show()">☰</button>
-        </div>
-        <div class="title">@Localize["Welcome, {0}!", context.User.FirstName()]</div>
-    </header>
+<header>
+    <div class="toolbar">
+        <button class="toolbar-item" @onclick="() => loginStatusOverlay.Show()">☰</button>
+    </div>
+    <div class="title">@Localize["Welcome,!"]</div>
+</header>
 
-    <Overlay @ref="loginStatusOverlay" OverlayStyle="Overlay.Style.Top" CssClass="home-overlay">
-        <LoginStatus />
-    </Overlay>
-</AuthorizeView>
+<Overlay @ref="loginStatusOverlay" OverlayStyle="Overlay.Style.Top" CssClass="home-overlay">
+</Overlay>
 
 <main class="container">
     <EditForm class="home-options" Model="this" OnValidSubmit="FindVehicle">
@@ -32,22 +28,20 @@
     <SyncStatus />
 </footer>
 
-@code {
-    Overlay loginStatusOverlay;
+@code { Overlay loginStatusOverlay;
 
-    [RegularExpression("[a-zA-Z0-9]+(\\-[a-zA-Z0-9]+)*\\-{0,1}", ErrorMessageResourceType = typeof(Resources.HybridApp), ErrorMessageResourceName = nameof(Resources.HybridApp.LicenseNumberIncorrectFormat))]
-    public string LicenseNumber { get; set; }
+            [RegularExpression("[a-zA-Z0-9]+(\\-[a-zA-Z0-9]+)*\\-{0,1}", ErrorMessageResourceType = typeof(Resources.HybridApp), ErrorMessageResourceName = nameof(Resources.HybridApp.LicenseNumberIncorrectFormat))]
+            public string LicenseNumber { get; set; }
 
-    async Task<IEnumerable<string>> GetLicenseAutocompleteItems(string prefix)
-    {
-        return await LocalVehiclesStore.Autocomplete(prefix);
-    }
+            async Task<IEnumerable<string>> GetLicenseAutocompleteItems(string prefix)
+            {
+                return await LocalVehiclesStore.Autocomplete(prefix);
+            }
 
-    void FindVehicle()
-    {
-        if (!string.IsNullOrEmpty(LicenseNumber))
-        {
-            Navigation.NavigateTo($"vehicle/{Uri.EscapeDataString(LicenseNumber)}");
-        }
-    }
-}
+            void FindVehicle()
+            {
+                if (!string.IsNullOrEmpty(LicenseNumber))
+                {
+                    Navigation.NavigateTo($"vehicle/{Uri.EscapeDataString(LicenseNumber)}");
+                }
+            } }

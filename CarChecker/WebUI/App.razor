@@ -1,25 +1,7 @@
-<CascadingAuthenticationState>
+
     <Router AppAssembly="@typeof(HybridApp).Assembly">
         <Found Context="routeData">
-            <AuthorizeRouteView RouteData="@routeData">
-                <Authorizing>
-                    <LayoutView Layout="@typeof(HeaderLayout)">
-                        <div class="loader"></div>
-                    </LayoutView>
-                </Authorizing>
-                <NotAuthorized>
-                    @if (!context.User.Identity.IsAuthenticated)
-                    {
-                        <NotLoggedIn />
-                    }
-                    else
-                    {
-                        <LayoutView Layout="@typeof(HeaderLayout)">
-                            <p>You are not authorized to access this resource.</p>
-                        </LayoutView>
-                    }
-                    </NotAuthorized>
-            </AuthorizeRouteView>
+            <RouteView RouteData="@routeData" />
         </Found>
         <NotFound>
             <LayoutView Layout="@typeof(HeaderLayout)">
@@ -27,4 +9,4 @@
             </LayoutView>
         </NotFound>
     </Router>
-</CascadingAuthenticationState>
+
